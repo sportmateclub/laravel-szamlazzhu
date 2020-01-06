@@ -208,8 +208,9 @@ class Client
     {
 
         if (($validator = Validator::make($config, [
-            'credentials.username' => 'required',
-            'credentials.password' => 'required',
+            // 'credentials.username' => 'required',
+            // 'credentials.password' => 'required',
+            'api_key' => 'required',
             'certificate.enabled' => ['required', 'boolean'],
             'certificate' => ['sometimes', 'array'],
             'certificate.disk' => ['required_if:certificate.enabled,1'],
@@ -531,8 +532,9 @@ class Client
      */
     protected function writeCredentials(XMLWriter &$writer)
     {
-        $writer->writeElement('felhasznalo', $this->config['credentials']['username']);
-        $writer->writeElement('jelszo', $this->config['credentials']['password']);
+        $writer->writeElement('szamlaagentkulcs', $this->config['api_key']);
+        // $writer->writeElement('felhasznalo', $this->config['credentials']['username']);
+        // $writer->writeElement('jelszo', $this->config['credentials']['password']);
     }
 
     /**

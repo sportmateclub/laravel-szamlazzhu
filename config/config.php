@@ -20,10 +20,12 @@ return [
         /*
          * Authentication credentials.
          * */
-        'credentials' => [
-            'username' => env('SZAMLAZZ_HU_USERNAME'),
-            'password' => env('SZAMLAZZ_HU_PASSWORD')
-        ],
+        // 'credentials' => [
+        //     'username' => env('SZAMLAZZ_HU_USERNAME'),
+        //     'password' => env('SZAMLAZZ_HU_PASSWORD')
+        // ],
+
+        'api_key' => env('SZAMLAZZ_HU_API_KEY'),
 
         /*
          * You can enable the certificate based communication.
