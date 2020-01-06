@@ -222,7 +222,7 @@ class Client
                     if (isset($config['certificate'])) {
                         $certificate = $config['certificate'];
 
-                        if (isset($certificate['disk'])) {
+                        if ($certificate['enabled'] && isset($certificate['disk'])) {
 
                             $disk = $config['certificate']['disk'];
                             if (!Storage::disk($disk)->exists($value)) {
@@ -454,7 +454,7 @@ class Client
     protected function processResponse(ResponseInterface $response)
     {
         if ($response->hasHeader('szlahu_error_code') or
-            str_contains((string)$response->getBody(), '<sikeres>false</sikeres>')) {
+            Str::contains((string)$response->getBody(), '<sikeres>false</sikeres>')) {
             $this->convertResponseToException($response);
         }
 
@@ -1138,7 +1138,7 @@ class Client
                 'currency' => $xml['alap']['devizanem'],
                 'exchangeRateBank' => isset($xml['alap']['devizabank']) ? $xml['alap']['devizabank'] : null,
                 'exchangeRate' => isset($xml['alap']['devizaarf']) ? $xml['alap']['devizaarf'] : null,
-                'comment' => html_entity_decode($xml['alap']['megjegyzes']),
+                'comment' => html_entity_decode(is_array($xml['alap']['megjegyzes']) ? ($xml['alap']['megjegyzes'][0] ?? null) : $xml['alap']['megjegyzes']),
                 'isKata' => $xml['alap']['kata'] == 'true',
             ];
 
@@ -1185,7 +1185,7 @@ class Client
                         'totalNetPrice' => (double)$item['netto'],
                         'taxValue' => (double)$item['afa'],
                         'totalGrossPrice' => (double)$item['brutto'],
-                        'comment' => html_entity_decode($item['megjegyzes'])
+                        'comment' => html_entity_decode(is_array($item['megjegyzes']) ? ($item['megjegyzes'][0] ?? null) : $item['megjegyzes'])
                     ];
                 })
                 ->toArray();
