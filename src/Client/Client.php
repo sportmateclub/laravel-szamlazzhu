@@ -1459,7 +1459,7 @@ class Client
 
         $contents = (string)$this->send(self::ACTIONS['GET_RECEIPT']['name'], $contents)->getBody();
 
-        try {
+        // try {
             $xml = json_decode(json_encode(simplexml_load_string($contents)), true);
 
             // General attributes
@@ -1530,7 +1530,7 @@ class Client
 
         // } catch (ParserException $exception) {
         //     throw new ReceiptNotFoundException($receiptNumber);
-        }
+        // }
 
         return new Receipt($head, $items, $payments);
     }
