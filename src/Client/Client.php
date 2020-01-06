@@ -137,7 +137,16 @@ class Client
                 'http://www.szamlazz.hu/xmlnyugtaget',
                 'http://www.szamlazz.hu/xmlnyugtaget http://www.szamlazz.hu/docs/xsds/nyugtaget/xmlnyugtaget.xsd'
             ]
-        ]
+        ],
+
+        'GET_INVOICE_PDF' => [
+            'name' => 'action-szamla_agent_pdf',
+            'schema' => [
+                'xmlszamlapdf',
+                'http://www.szamlazz.hu/xmlszamlapdf',
+                'http://www.szamlazz.hu/xmlszamlapdf https://www.szamlazz.hu/szamla/docs/xsds/agentpdf/xmlszamlapdf.xsd',
+            ],
+        ],
     ];
 
     /**
@@ -1537,4 +1546,22 @@ class Client
         return new Receipt($head, $items, $payments);
     }
 
+    /**
+     * @param string $invoiceNumber
+     * @return string
+     */
+    public function getInvoicePdf(string $invoiceNumber): string
+    {
+        $contents = $this->writer(function (XMLWriter $writer) use (&$invoiceNumber) {
+            $this->writeCredentials($writer);
+            $writer->writeElement('szamlaszam', $invoiceNumber);
+            $writer->writeElement('valaszVerzio', 2);
+        },
+            ...self::ACTIONS['GET_INVOICE_PDF']['schema']);
+
+        $contents = (string)$this->send(self::ACTIONS['GET_INVOICE_PDF']['name'], $contents)->getBody();
+
+        $xml = json_decode(json_encode(simplexml_load_string($contents)), true);
+        return base64_decode($xml['pdf']);
+    }
 }
