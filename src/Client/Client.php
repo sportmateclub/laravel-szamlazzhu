@@ -12,8 +12,6 @@ use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
 use InvalidArgumentException;
-use Nathanmac\Utilities\Parser\Exceptions\ParserException;
-use Nathanmac\Utilities\Parser\Parser;
 use Psr\Http\Message\ResponseInterface;
 use SzuniSoft\SzamlazzHu\Client\ApiErrors\AuthenticationException;
 use SzuniSoft\SzamlazzHu\Client\ApiErrors\CannotCreateInvoiceException;
@@ -349,12 +347,13 @@ class Client
     protected function isAuthenticationError(ResponseInterface $response)
     {
         try {
-            $xml = (new Parser)->xml((string)$response->getBody());
+            $xml = json_decode(json_encode(simplexml_load_string((string)$response->getBody())), true);
             if (isset($xml['sikeres']) && $xml['sikeres'] === 'false'
                 && isset($xml['hibauzenet']) && $xml['hibauzenet'] === 'Sikertelen bejelentkezés.') {
                 return true;
             }
-        } catch (ParserException $e) {
+        } catch (\Exception $e) {
+            // TODO: log error
             return false;
         }
     }
@@ -1123,7 +1122,7 @@ class Client
              * */
             $contents = (string)$this->send(self::ACTIONS['GET_COMMON_INVOICE']['name'], $contents)->getBody();
 
-            $xml = (new Parser)->xml($contents);
+            $xml = json_decode(json_encode(simplexml_load_string($contents)), true);
 
 
             // General attributes
@@ -1198,8 +1197,8 @@ class Client
             }
 
             throw $exception;
-        } catch (ParserException $exception) {
-            throw new InvoiceNotFoundException($invoiceNumber);
+        // } catch (ParserException $exception) {
+        //     throw new InvoiceNotFoundException($invoiceNumber);
         }
 
         return [
@@ -1461,8 +1460,7 @@ class Client
         $contents = (string)$this->send(self::ACTIONS['GET_RECEIPT']['name'], $contents)->getBody();
 
         try {
-
-            $xml = (new Parser)->xml($contents);
+            $xml = json_decode(json_encode(simplexml_load_string($contents)), true);
 
             // General attributes
             $head = [
@@ -1530,8 +1528,8 @@ class Client
                 );
             }
 
-        } catch (ParserException $exception) {
-            throw new ReceiptNotFoundException($receiptNumber);
+        // } catch (ParserException $exception) {
+        //     throw new ReceiptNotFoundException($receiptNumber);
         }
 
         return new Receipt($head, $items, $payments);

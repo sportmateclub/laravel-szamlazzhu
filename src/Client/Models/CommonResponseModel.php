@@ -3,8 +3,6 @@
 
 namespace SzuniSoft\SzamlazzHu\Client\Models;
 
-use Nathanmac\Utilities\Parser\Exceptions\ParserException;
-use Nathanmac\Utilities\Parser\Parser;
 use Psr\Http\Message\ResponseInterface;
 use SzuniSoft\SzamlazzHu\Client\Client;
 
@@ -13,7 +11,8 @@ use SzuniSoft\SzamlazzHu\Client\Client;
  * Class CommonResponseModel
  * @package SzuniSoft\SzamlazzHu\Client\Models
  */
-abstract class CommonResponseModel {
+abstract class CommonResponseModel
+{
 
     protected static $noXml = false;
 
@@ -37,13 +36,11 @@ abstract class CommonResponseModel {
         $content = (string)$response->getBody();
         $this->client = $client;
 
-        try {
-            $this->attributes = $this->mapAttributes(
-                static::$noXml ? $content : (new Parser)->xml($content)
-            );
-        } catch (ParserException $e) {
-
-        }
+        $this->attributes = $this->mapAttributes(
+            static::$noXml
+                ? $content
+                : json_decode(json_encode(simplexml_load_string($content)), true)
+        );
     }
 
     /**
