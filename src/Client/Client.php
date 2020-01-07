@@ -202,6 +202,16 @@ class Client
     }
 
     /**
+     * @param string $apiKey
+     * @return $this
+     */
+    public function setApiKey(string $apiKey): self
+    {
+        $this->config['api_key'] = $apiKey;
+        return $this;
+    }
+
+    /**
      * @return array
      */
     public function getConfig()
@@ -219,7 +229,7 @@ class Client
         if (($validator = Validator::make($config, [
             // 'credentials.username' => 'required',
             // 'credentials.password' => 'required',
-            'api_key' => 'required',
+            // 'api_key' => 'required',
             'certificate.enabled' => ['required', 'boolean'],
             'certificate' => ['sometimes', 'array'],
             'certificate.disk' => ['required_if:certificate.enabled,1'],
