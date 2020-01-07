@@ -54,6 +54,9 @@ abstract class AbstractInvoice extends AbstractModel
         'de', 'en', 'it', 'hu', 'fr', 'ro', 'sk', 'hr'
     ];
 
+    /** @var string */
+    public $pdf;
+
     /**
      * @return array
      */
