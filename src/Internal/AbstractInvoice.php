@@ -132,7 +132,7 @@ abstract class AbstractInvoice extends AbstractModel
             if ($attributes instanceof AbstractInvoice) {
                 $ancestorItems = $attributes->items();
                 $attributes = $attributes->attributes;
-                if ($this->items->isEmpty() && ! $ancestorItems->isEmpty()) {
+                if ($this->items->isEmpty() && !$ancestorItems->isEmpty()) {
                     $this->items = $ancestorItems;
                 }
             }
@@ -140,7 +140,7 @@ abstract class AbstractInvoice extends AbstractModel
             // Retrieve only head attributes
             $headAttributes = Collection::wrap($attributes)
                 ->filter(function ($value, $key) {
-                    return ! Str::startsWith($key, ['merchant', 'customer']);
+                    return !Str::startsWith($key, ['merchant', 'customer']);
                 })
                 ->toArray();
 
@@ -160,26 +160,26 @@ abstract class AbstractInvoice extends AbstractModel
                 ->toArray();
 
             // Fill up invoice head attributes
-            if (! empty(! empty($headAttributes))) {
+            if (!empty(!empty($headAttributes))) {
                 $this->fill($headAttributes);
             }
 
         }
 
-        $customerAttributes = (! $customer && isset($customerAttributes)) ? $customerAttributes : [];
-        $merchantAttributes = (! $merchant && isset($merchantAttributes)) ? $merchantAttributes : [];
+        $customerAttributes = (!$customer && isset($customerAttributes)) ? $customerAttributes : [];
+        $merchantAttributes = (!$merchant && isset($merchantAttributes)) ? $merchantAttributes : [];
 
         // Set customer attributes
-        if ($customer || ! empty($customerAttributes)) {
+        if ($customer || !empty($customerAttributes)) {
             $this->setCustomer($customer ?: $customerAttributes);
         }
 
         // Set merchant attributes
-        if ($merchant || ! empty($merchantAttributes)) {
+        if ($merchant || !empty($merchantAttributes)) {
             $this->setMerchant($merchant ?: $merchantAttributes);
         }
 
-        if (! $this->createdAt) {
+        if (!$this->createdAt) {
             $this->createdAt = Carbon::now();
         }
     }
@@ -190,7 +190,7 @@ abstract class AbstractInvoice extends AbstractModel
     protected function setInvoiceLanguageAttribute($lang)
     {
         $lang = strtolower(trim($lang));
-        if (! in_array($lang, static::$supportedLanguages)) {
+        if (!in_array($lang, static::$supportedLanguages)) {
             $list = implode(',', static::$supportedLanguages);
             throw new InvalidArgumentException("Invalid language [$lang] provided! Accepted languages are: [$list]");
         }
@@ -217,5 +217,8 @@ abstract class AbstractInvoice extends AbstractModel
         );
     }
 
-
+    public function getInvoiceNumber()
+    {
+        return $this->invoiceNumber;
+    }
 }
