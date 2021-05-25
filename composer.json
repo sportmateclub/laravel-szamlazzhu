@@ -44,9 +44,6 @@
     "illuminate/validation": "^7.0"
   },
   "extra": {
-    "branch-alias": {
-      "dev-master": "master"
-    },
     "laravel": {
       "aliases": {
       },
