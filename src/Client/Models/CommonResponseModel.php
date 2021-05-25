@@ -4,7 +4,9 @@
 namespace SzuniSoft\SzamlazzHu\Client\Models;
 
 use Psr\Http\Message\ResponseInterface;
+use RuntimeException;
 use SzuniSoft\SzamlazzHu\Client\Client;
+use SzuniSoft\SzamlazzHu\Util\XmlParser;
 
 
 /**
@@ -13,6 +15,7 @@ use SzuniSoft\SzamlazzHu\Client\Client;
  */
 abstract class CommonResponseModel
 {
+    use XmlParser;
 
     protected static $noXml = false;
 
@@ -28,18 +31,17 @@ abstract class CommonResponseModel
 
     /**
      * CommonResponseModel constructor.
-     * @param Client $client
+     *
+     * @param Client            $client
      * @param ResponseInterface $response
      */
     public function __construct(Client $client, ResponseInterface $response)
     {
-        $content = (string)$response->getBody();
+        $content      = (string)$response->getBody();
         $this->client = $client;
 
         $this->attributes = $this->mapAttributes(
-            static::$noXml
-                ? $content
-                : json_decode(json_encode(simplexml_load_string($content)), true)
+            static::$noXml ? $content : $this->parse($content)
         );
     }
 
@@ -53,6 +55,7 @@ abstract class CommonResponseModel
 
     /**
      * @param $name
+     *
      * @return mixed|null
      */
     public function __get($name)
@@ -67,6 +70,7 @@ abstract class CommonResponseModel
      * Maps remote attributes
      *
      * @param array|string $content
+     *
      * @return array
      */
     abstract protected function mapAttributes($content);
