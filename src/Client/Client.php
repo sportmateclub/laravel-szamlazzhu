@@ -233,9 +233,9 @@ class Client
     {
 
         $rules = [
-            'credentials.username' => 'required_without:credentials.api_key',
-            'credentials.password' => 'required_without:credentials.api_key',
-            'credentials.api_key'  => 'required_without:credentials.username',
+            //'credentials.username' => 'required_without:credentials.api_key',
+            //'credentials.password' => 'required_without:credentials.api_key',
+            //'credentials.api_key'  => 'required_without:credentials.username',
             'certificate.enabled'  => ['required', 'boolean'],
             'certificate'          => ['sometimes', 'array'],
             'certificate.path'     => [
