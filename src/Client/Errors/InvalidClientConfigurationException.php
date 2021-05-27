@@ -24,8 +24,9 @@ class InvalidClientConfigurationException extends Exception
 
     public function __construct(Validator $validator, string $message = "", int $code = 0, Throwable $previous = null)
     {
-        parent::__construct($message, $code, $previous);
         $this->validator = $validator;
+        $message = empty($message) ? $this->__toString() : $message;
+        parent::__construct($message, $code, $previous);
     }
 
     /**
@@ -38,7 +39,7 @@ class InvalidClientConfigurationException extends Exception
 
     public function __toString()
     {
-        return implode(',', $this->validator->getMessageBag()->getMessages());
+        return implode(',', collect($this->validator->getMessageBag()->getMessages())->flatten()->toArray());
     }
 
 
