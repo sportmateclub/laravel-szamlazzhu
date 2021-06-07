@@ -34,6 +34,7 @@ abstract class ModelValidationException extends Exception
     {
         $this->model = $model;
         $this->validator = $validator;
+        $message = empty($message) ? $this->getValidationErrors() : $message;
         parent::__construct($message, $code, $previous);
     }
 
@@ -45,4 +46,8 @@ abstract class ModelValidationException extends Exception
         return $this->validator;
     }
 
+    protected function getValidationErrors()
+    {
+        return implode(',', collect($this->validator->getMessageBag()->getMessages())->flatten()->toArray());
+    }
 }
