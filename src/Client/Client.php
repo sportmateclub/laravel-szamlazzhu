@@ -212,7 +212,7 @@ class Client
      */
     public function setApiKey(string $apiKey): self
     {
-        $this->config['api_key'] = $apiKey;
+        $this->config['credentials']['api_key'] = $apiKey;
         return $this;
     }
 
